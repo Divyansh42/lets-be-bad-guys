@@ -1,0 +1,58 @@
+name: CRDA scan Python Example
+on: [ push, workflow_dispatch ]
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    name: Analyse Python project
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+
+      - uses: actions/setup-python@v2
+        with:
+          python-version: '3.9.6'
+
+      - run: |
+          pip install -r requirements.txt
+
+      - name: Install CRDA
+        uses: redhat-actions/openshift-tools-installer@v1
+        with:
+          source: github
+          github_pat: ${{ github.token }}
+          crda: "latest"
+
+      - name: CRDA Scan
+        id: scan
+        uses: ./
+        with:
+          manifest_file_path: requirements.txt
+          # crda_key: ${{ secrets.CRDA_KEY }}
+          analysis_report_file_name: python
+          snyk_token: ${{ secrets.SNYK_TOKEN }}
+          consent_telemetry: true
+
+      - name: Print Analysis Report
+        if: always()
+        run: cat ${{ steps.scan.outputs.crda_report_json }}
+
+      - name: Print Sarif
+        if: always()
+        run: cat ${{ steps.scan.outputs.crda_report_sarif }}
+
+      - name: Upload result to GitHub Code Scanning
+        uses: github/codeql-action/upload-sarif@v1
+        with:
+          sarif_file: ${{ steps.scan.outputs.crda_report_sarif }}
+
+      - name: Save intermediate files
+        run: |
+          mkdir -p uploads
+          mv ${{ steps.scan.outputs.crda_report_json }} uploads
+          mv ${{ steps.scan.outputs.crda_report_sarif }} uploads
+
+      - name: Upload merged Results
+        uses: actions/upload-artifact@v2
+        with:
+          name: workfiles_python
+          path: ./uploads
