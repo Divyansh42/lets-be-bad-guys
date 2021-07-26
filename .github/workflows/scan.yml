@@ -24,7 +24,7 @@ jobs:
 
       - name: CRDA Scan
         id: scan
-        uses: ./
+        uses: divyansh42/crda-action@main
         with:
           manifest_file_path: requirements.txt
           # crda_key: ${{ secrets.CRDA_KEY }}
