@@ -24,7 +24,7 @@ jobs:
 
       - name: CRDA Scan
         id: scan
-        uses: divyansh42/crda-action@main
+        uses: redhat-actions/crda@add-upload-sarif
         with:
           manifest_file_path: requirements.txt
           # crda_key: ${{ secrets.CRDA_KEY }}
@@ -40,10 +40,10 @@ jobs:
         if: always()
         run: cat ${{ steps.scan.outputs.crda_report_sarif }}
 
-      - name: Upload result to GitHub Code Scanning
-        uses: github/codeql-action/upload-sarif@v1
-        with:
-          sarif_file: ${{ steps.scan.outputs.crda_report_sarif }}
+      # - name: Upload result to GitHub Code Scanning
+      #   uses: github/codeql-action/upload-sarif@v1
+      #   with:
+      #     sarif_file: ${{ steps.scan.outputs.crda_report_sarif }}
 
       - name: Save intermediate files
         run: |
