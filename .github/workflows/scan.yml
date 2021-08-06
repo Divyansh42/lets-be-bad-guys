@@ -29,13 +29,14 @@ jobs:
         id: scan
         uses: divyansh42/crda@add-upload-sarif
         with:
-          manifest_file_path: test/requirements.txt
+          manifest_file_path: requirements.txt
           # crda_key: ${{ secrets.CRDA_KEY }}
           analysis_report_file_name: python
           snyk_token: ${{ secrets.SNYK_TOKEN }}
           fail_on_vulnerability: false
           consent_telemetry: true
           upload_sarif: true
+          checkout_path: test
 
       - name: Print Analysis Report
         if: always()
