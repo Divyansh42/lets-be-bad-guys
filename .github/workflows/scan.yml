@@ -35,6 +35,7 @@ jobs:
           snyk_token: ${{ secrets.SNYK_TOKEN }}
           fail_on_vulnerability: false
           consent_telemetry: true
+          upload_sarif: false
 
       - name: Print Analysis Report
         if: always()
@@ -44,10 +45,11 @@ jobs:
         if: always()
         run: cat ${{ steps.scan.outputs.crda_report_sarif }}
 
-      # - name: Upload result to GitHub Code Scanning
-      #   uses: github/codeql-action/upload-sarif@v1
-      #   with:
-      #     sarif_file: ${{ steps.scan.outputs.crda_report_sarif }}
+      - name: Upload result to GitHub Code Scanning
+        uses: github/codeql-action/upload-sarif@v1
+        with:
+          sarif_file: ${{ steps.scan.outputs.crda_report_sarif }}
+          checkout_path: test
 
       - name: Save intermediate files
         run: |
