@@ -1,5 +1,5 @@
 name: CRDA scan Python Example
-on: [ push, workflow_dispatch ]
+on: [ push, workflow_dispatch, pull_request_target ]
 jobs:
   test:
     runs-on: ubuntu-latest
@@ -14,9 +14,9 @@ jobs:
         with:
           python-version: '3.9.6'
 
-      - run: |
-          ls
-          pip install -r test/requirements.txt
+      # - run: |
+      #     ls
+      #     pip install -r test/requirements.txt
 
       - name: Install CRDA
         uses: redhat-actions/openshift-tools-installer@v1
@@ -36,6 +36,7 @@ jobs:
           fail_on_vulnerability: false
           consent_telemetry: true
           upload_sarif: true
+          dependency_installation_cmd: pip install -r requirements.txt
           checkout_path: test
 
       - name: Print Analysis Report
