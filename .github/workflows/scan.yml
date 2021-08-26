@@ -27,7 +27,7 @@ jobs:
 
       - name: CRDA Scan
         id: scan
-        uses: divyansh42/crda@add-upload-sarif
+        uses: divyansh42/crda@support-pr
         with:
           manifest_file_path: requirements.txt
           # crda_key: ${{ secrets.CRDA_KEY }}
